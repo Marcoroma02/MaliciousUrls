@@ -84,7 +84,10 @@ def dataPreprocessing(data):
     data = data.dropna()
     print("Numeri dati dopo l'eliminazione di quelli nulli: " + data.shape)
     """
-    
+    trainingAndTesting(data)
+
+
+def trainingAndTesting(data):
     # Divide il dataset in dati di addestramento e dati di test
     train_df, test_df = train_test_split(data, test_size=0.2, stratify=data['type'], random_state=42)
 
