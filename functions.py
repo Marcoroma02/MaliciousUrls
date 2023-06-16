@@ -1,11 +1,11 @@
 # Import the libraries
-import pandas as pd                  # data processing, CSV file I/O (e.g. pd.read_csv)
-import re                            # regular expressions
-from urllib.parse import urlparse, urlunparse # url parsing
-import numpy as np                    # linear algebra
-import matplotlib.pyplot as plt       # data visualization
-import seaborn as sns                 # statistical data visualization
-from sklearn.model_selection import train_test_split # data split
+import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
+import re  # regular expressions
+from urllib.parse import urlparse, urlunparse  # url parsing
+import numpy as np  # linear algebra
+import matplotlib.pyplot as plt  # data visualization
+import seaborn as sns  # statistical data visualization
+from sklearn.model_selection import train_test_split  # data split
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -23,7 +23,9 @@ from tabulate import tabulate
 """
     Funzione che stampa i dati
 """
-def printData():
+
+
+def print_data():
     print("SONO IN PRINT DATA")
     # Read the data
     data = pd.read_csv('malicious_phish.csv', nrows=4000)
@@ -39,30 +41,34 @@ def printData():
     print("--------------------")
     print(data.describe())
     print("--------------------")
-    cleanData(data)
+    clean_data(data)
 
 
 """
     Funzione che pulisce i dati
 """
-def cleanData(data):
+
+
+def clean_data(data):
     print("SONO IN CLEAN DATA")
     data['type'] = data['type'].values.astype(str)
     print(data['type'])
     print("Drop duplicates and NA values")
-    #data = data.drop_duplicates()
-    #print("Dropna")
-    #data = data.dropna()
-    #print("Validators")
-    #data = data[data['url'].apply(lambda x: validators.url(x))]
+    # data = data.drop_duplicates()
+    # print("Dropna")
+    # data = data.dropna()
+    # print("Validators")
+    # data = data[data['url'].apply(lambda x: validators.url(x))]
     print("--------------------")
-    dataDiscovery(data)
+    data_discovery(data)
 
 
 """
     Funzione che esegue la data discovery
 """
-def dataDiscovery(data):
+
+
+def data_discovery(data):
     print("SONO IN DATA DISCOVERY")
 
     # Percentual of each type
@@ -89,13 +95,15 @@ def dataDiscovery(data):
     p_bar.set_ylabel('Count');
     plt.show()
     print("--------------------")
-    dataPreprocessing(data)
+    data_preprocessing(data)
 
 
 """
     Funzione che pre-elabora i dati
 """
-def dataPreprocessing(data):
+
+
+def data_preprocessing(data):
     print("SONO IN DATA PREPROCESSING")
     """
     data.isnull().sum()
@@ -104,10 +112,10 @@ def dataPreprocessing(data):
     print("Numeri dati dopo l'eliminazione di quelli nulli: " + data.shape)
     """
     print("--------------------")
-    trainingAndTesting(data)
+    training_and_testing(data)
 
 
-def trainingAndTestingSplittingCSV(data):
+def training_and_testing_splitting_csv(data):
     print("SONO IN TRAINING AND TESTING SPLITTING CSV")
     # Divide il dataset in dati di addestramento e dati di test
     train_df, test_df = train_test_split(data, test_size=0.2, stratify=data['type'], random_state=42)
@@ -121,7 +129,7 @@ def trainingAndTestingSplittingCSV(data):
     print("Test raw number: " + str(test_raw_num))
 
 
-def trainingAndTesting(data):
+def training_and_testing(data):
     print("SONO IN TRAINING AND TESTING")
 
     # Dimensione del batch
@@ -136,6 +144,8 @@ def trainingAndTesting(data):
         SGDClassifier()
     ]
 
+    results = []
+
     for model in models:
         total_accuracy = 0
         total_precision = 0
@@ -148,7 +158,7 @@ def trainingAndTesting(data):
         for start in range(0, total_raws, batch_size):
             i += 1
             end = min(start + batch_size, total_raws)
-            #print(data[start:end])
+            # print(data[start:end])
 
             # Seleziona il batch corrente
             batch_data = data[start:end]
@@ -162,7 +172,8 @@ def trainingAndTesting(data):
             y = y.map(label_mapping)
 
             # Divisione dei dati in dati di addestramento e dati di test
-            train_feature, test_feature, train_labels, test_labels = train_test_split(x, y, test_size=0.2, stratify=y, random_state=42)
+            train_feature, test_feature, train_labels, test_labels = train_test_split(x, y, test_size=0.2, stratify=y,
+                                                                                      random_state=42)
 
             # Creazione di una rappresentazione numerica utilizzando TF-IDF
             tfidf = TfidfVectorizer()
@@ -184,7 +195,7 @@ def trainingAndTesting(data):
             precision = precision_score(test_labels, predictions, average='weighted', zero_division=1)
             recall = recall_score(test_labels, predictions, average='weighted')
             f1 = f1_score(test_labels, predictions, average='weighted')
-            #roc_auc = roc_auc_score(test_labels, predictions, average='weighted', multi_class='ovr')
+            # roc_auc = roc_auc_score(test_labels, predictions, average='weighted', multi_class='ovr')
 
             # Aggiorna le metriche totali
             total_accuracy += accuracy
@@ -202,18 +213,20 @@ def trainingAndTesting(data):
         avarage_recall = total_recall / num_models
         avarage_f1 = total_f1 / num_models
 
+        salva_risultati(results, model, avarage_accuracy, avarage_precision, avarage_recall, avarage_f1)
+
         print("Accuracy: ", avarage_accuracy)
         print("Precision: ", avarage_precision)
         print("Recall: ", avarage_recall)
         print("F1: ", avarage_f1)
 
-        creaTabella(model, avarage_accuracy, avarage_precision, avarage_recall, avarage_f1)
-        creaConfusionMatrix(model, total_labels, total_predictions)
+        crea_tabella(model, avarage_accuracy, avarage_precision, avarage_recall, avarage_f1)
+        crea_confusion_matrix(model, total_labels, total_predictions)
 
         print("\n--------------------\n\n")
 
 
-def creaTabella(model, avarage_accuracy, avarage_precision, avarage_recall, avarage_f1):
+def crea_tabella(model, avarage_accuracy, avarage_precision, avarage_recall, avarage_f1):
     print("SONO IN CREA TABELLA")
     # Creazione della tabella
     df = pd.DataFrame({'Name: ': [model.__class__.__name__],
@@ -242,7 +255,7 @@ def creaTabella(model, avarage_accuracy, avarage_precision, avarage_recall, avar
     plt.show()
 
 
-def creaConfusionMatrix(model, total_labels, total_predictions):
+def crea_confusion_matrix(model, total_labels, total_predictions):
     confusion = confusion_matrix(total_labels, total_predictions)
     plt.figure(figsize=(8, 6))
     sns.heatmap(confusion / np.sum(confusion), annot=True, fmt='0.2%', cmap='Blues')
@@ -250,3 +263,11 @@ def creaConfusionMatrix(model, total_labels, total_predictions):
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
     plt.show()
+
+
+def salva_risultati(results, model, avarage_accuracy, avarage_precision, avarage_recall, avarage_f1):
+    results.append({'Model': model.__class__.__name__,
+                    'Accuracy': avarage_accuracy,
+                    'Precision': avarage_precision,
+                    'Recall': avarage_recall,
+                    'F1': avarage_f1})
