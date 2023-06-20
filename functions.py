@@ -56,7 +56,7 @@ def clean_data(data):
     #print(data['type'])
     #print("--------------------\n\n")
 
-    # Delete the duplicates and NA values
+    # Delete the duplicates and NA valuesd
     print("Drop duplicates and NA values: ")
     data = data.drop_duplicates()
     print("--------------------\n\n")
@@ -106,8 +106,8 @@ def data_discovery(data):
     print("--------------------\n\n")
 
     # Plot the data
-    p_bar = data['type'].value_counts().plot(kind='bar', title='Type', figsize=(10, 8));
-    p_bar.set_ylabel('Count');
+    p_bar = data['type'].value_counts().plot(kind='bar', title='Type', figsize=(10, 8))
+    p_bar.set_ylabel('Count')
 
     # Save the plot
     folder_path_info = '/Users/marcoromanella/Desktop/MaliciousUrls/img/info'
@@ -171,14 +171,6 @@ def training_and_testing(data):
         GaussianNB(),              # FUNZIONA
         DecisionTreeClassifier(),  # FUNZIONA
         RandomForestClassifier(),  # FUNZIONA
-
-        #KNeighborsClassifier(),    # FUNZIONA MA PESANTE
-        #MLPClassifier(),           # PESANTE
-        ##SupportVectorMachine(),   # NON FUNZIONA
-        ##LogisticRegression(),     # NON FUNZIONA
-        ##CatBoostClassifier(),     # NON FUNZIONA
-        ##LogisticRegression(),     # NON FUNZIONA
-        ##SGDClassifier()           # NON FUNZIONA
     ]
 
     results = []
