@@ -11,6 +11,9 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from tabulate import tabulate
 import matplotlib.pyplot as plt
 import os
+#from tensorflow.keras.models import Sequential
+#from tensorflow.keras.layers import LSTM, Dense
+
 
 # RIGHE DA ELIMINARE: 521009
 
@@ -43,7 +46,12 @@ def print_data():
     print("Data describe:")
     print(data.describe())
     print("--------------------\n\n")
-    clean_data(data)
+    # Print the url length
+    print("Url length:")
+    data['url_length'] = data['url'].apply(len)
+    print(data[['url', 'url_length']])
+    print("--------------------\n\n")
+    #clean_data(data)
 
 
 """
@@ -126,8 +134,7 @@ def data_discovery(data):
     plt.show()
 
     print("--------------------")
-
-    data_preprocessing(data)
+    #data_preprocessing(data)
 
 
 """
@@ -210,8 +217,8 @@ def training_and_testing(data):
             test_vectors = tfidf.transform(test_feature).toarray()
 
             # Trasformazione delle etichette in array 1D
-            train_labels = train_labels.values.reshape(-1)
-            test_labels = test_labels.values.reshape(-1)
+            # train_labels = train_labels.values.reshape(-1)
+            # test_labels = test_labels.values.reshape(-1)
 
             # Addestramento del modello
             print("MODELLO: " + model.__class__.__name__)
